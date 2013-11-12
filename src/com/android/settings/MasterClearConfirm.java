@@ -21,6 +21,8 @@ import com.android.internal.widget.LockPatternUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -57,6 +59,7 @@ public class MasterClearConfirm extends Fragment {
             if (Utils.isMonkeyRunning()) {
                 return;
             }
+			showProgressDialog();
 
             if (mEraseSdCard) {
                 Intent intent = new Intent(ExternalStorageFormatter.FORMAT_AND_FACTORY_RESET);
@@ -68,6 +71,17 @@ public class MasterClearConfirm extends Fragment {
             }
         }
     };
+
+	/**/
+	private void showProgressDialog() {
+		Context context = getActivity().getApplicationContext();
+		ProgressDialog progress = new ProgressDialog(getActivity());
+		progress.setTitle(R.string.master_clear_title);
+		progress.setMessage(context.getString(R.string.master_clear_notification));
+		progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		progress.setCancelable(false);
+		progress.show();
+	}
 
     /**
      * Configure the UI for the final confirmation interaction

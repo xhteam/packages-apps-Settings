@@ -912,6 +912,8 @@
     <string name="master_clear_gesture_explanation" msgid="826193821455182780">"您需要绘制解锁图案以确认要恢复出厂设置。"</string>
     <string name="master_clear_failed" msgid="7959646179737950703">"“系统清除”服务不可用，因此未执行重置操作。"</string>
     <string name="master_clear_confirm_title" msgid="7572642091599403668">"要重置吗？"</string>
+	<!-- Add by John. 12/11/2013 -->
+	<string name="master_clear_notification">"正在清除数据，请稍候..."</string>
     <string name="media_format_title" product="nosdcard" msgid="3999653431422767156">"格式化 USB 存储设备"</string>
     <string name="media_format_title" product="default" msgid="4427528440306787972">"格式化 SD 卡"</string>
     <string name="media_format_summary" product="nosdcard" msgid="776603298628082065">"清除 USB 存储设备中的全部数据"</string>

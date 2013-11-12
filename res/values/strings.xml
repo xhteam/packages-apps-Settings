@@ -2185,6 +2185,8 @@
     <string name="master_clear_failed">No reset was performed because the System Clear service isn\'t available.</string>
     <!-- Master clear confirmation screen title [CHAR LIMIT=30] -->
     <string name="master_clear_confirm_title">Reset?</string>
+	<!-- Master clear notification (Add by John. 12/11/2013) -->
+	<string name="master_clear_notification">Erasing, please wait...</string>
 
     <!-- Media Format -->
     <!-- SD card & phone storage settings screen, setting option name under Internal phone storage heading [CHAR LIMIT=25] -->
