@@ -71,6 +71,8 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment {
     int mDevHitCountdown;
     Toast mDevHitToast;
 
+    long[] mHardwareHits = new long[3];
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -86,8 +88,8 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment {
         setStringSummary(KEY_BUILD_NUMBER, Build.DISPLAY);
         findPreference(KEY_BUILD_NUMBER).setEnabled(true);
         findPreference(KEY_KERNEL_VERSION).setSummary(getFormattedKernelVersion());
-        findPreference(KEY_HARDWARE_VERSION).setSummary(getFormattedHardwareVersion());
-
+        findPreference(KEY_HARDWARE_VERSION).setSummary(getFormattedHardwareVersion(false));
+		findPreference(KEY_HARDWARE_VERSION).setEnabled(true);
         if (!SELinux.isSELinuxEnabled()) {
             String status = getResources().getString(R.string.selinux_status_disabled);
             setStringSummary(KEY_SELINUX_STATUS, status);
@@ -206,7 +208,14 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment {
                         Toast.LENGTH_LONG);
                 mDevHitToast.show();
             }
-        }
+        }else if(preference.getKey().equals(KEY_HARDWARE_VERSION)){
+            System.arraycopy(mHardwareHits, 1, mHardwareHits, 0, mHardwareHits.length-1);
+            mHardwareHits[mHardwareHits.length-1] = SystemClock.uptimeMillis();
+            if (mHardwareHits[0] >= (SystemClock.uptimeMillis()-500)) {
+				findPreference(KEY_HARDWARE_VERSION).setSummary(getFormattedHardwareVersion(true));
+            }
+
+		}
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
@@ -266,10 +275,28 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment {
         }
     }
 
-    public static String getFormattedHardwareVersion() {
+    public static String getFormattedHardwareVersion(boolean detailed) {
         try {
-            return readLine("/proc/boardrev");
+			if(false==detailed)
+				return readLine("/proc/boardrev");
+			StringBuilder sbHwInfo = new StringBuilder();
+			sbHwInfo.append(readLine("/proc/boardrev")+"\n");
+			BufferedReader reader = new BufferedReader(new FileReader("/proc/cpuinfo"), 1024);
+			String line=null;
+			boolean append_start=false;
+			try {
+				while((line=reader.readLine())!=null){
+					if(line.contains("Processor")||
+						line.contains("Features")||
+						line.contains("Hardware")||
+						line.contains("Revision"))
+						sbHwInfo.append(line+"\n");
+				}
+			} finally {
+				reader.close();
+			}
 
+			return sbHwInfo.toString();
         } catch (IOException e) {
             Log.e(LOG_TAG,
                 "IO Exception when getting hardware version for Device Info screen",
